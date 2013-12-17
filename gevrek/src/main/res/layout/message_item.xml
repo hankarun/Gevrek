@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/messagelayout"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/date"
+        android:textSize="9sp"
+        android:textAlignment="gravity"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_marginRight="5dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/body"
+        android:layout_weight="1"
+        android:paddingLeft="2dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textColor="#000000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/author"
+        android:gravity="center_vertical"
+        android:ellipsize="middle"
+        android:textAlignment="gravity"
+        android:textSize="10sp"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+</LinearLayout>

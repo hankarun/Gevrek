@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gevrek</string>
+    <string name="action_settings">Settings</string>
+    <string name="cow_manager">COW Manager</string>
+    <string name="cow_username">COW Username</string>
+    <string name="cow_password">COW Password</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="save_password">Save Password</string>
+    <string name="login">Login</string>
+    <string name="loading">Loading</string>
+    <string name="login_success">Login Success</string>
+    <string name="check_creds">Wrong Username or Password</string>
+    <string name="network_problem">Network Problem</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_section1">Newsgroups</string>
+    <string name="title_section2">Notes</string>
+    <string name="title_section3">Delete User</string>
+    <string name="title_section4">Log Out</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="title_activity_group_messages">GroupMessages</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_message_read">MessageRead</string>
+    <string name="subjet_text">Subject</string>
+    <string name="from_text">From</string>
+    <string name="date">Date</string>
+    <string name="attachments">Attachments</string>
+    <string name="title_activity_post">PostActivity</string>
+    <string name="body_text">Body</string>
+    <string name="quote">Add Quote</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="previus">Prev</string>
+    <string name="reply">Reply</string>
+    <string name="new_post">New</string>
+
+
+</resources>
