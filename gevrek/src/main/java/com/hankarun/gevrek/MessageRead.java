@@ -316,7 +316,7 @@ public class MessageRead extends FragmentActivity {
                     date.setText(tmp.substring(dbb + 6, dbb+20)); //date
 
                     Elements bod  = doc.select("div.np_article_body");
-                    String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='iso-8859-9' /></head><body>";
+                    String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /></head><body>";
                     String end = "</body></html>";
                     body.loadData(start + attach + bod.toString() + end, "text/html; charset=UTF-8", null);
                     body.setBackgroundColor(0x00000000);

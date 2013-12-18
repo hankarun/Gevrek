@@ -164,6 +164,11 @@ public class Homeworks extends FragmentActivity {
                             tmp.avarage = others.get(x).select("td").get(6).text();
                             hmws.add(tmp);
                         }
+                    }else{
+                        //Show no homework screen
+                        Toast.makeText(getActivity().getApplicationContext(), R.string.no_hmw, Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
+
                     }
 
                     MyOtherAdapter adapter = new MyOtherAdapter(getActivity().getApplicationContext(),hmws);
