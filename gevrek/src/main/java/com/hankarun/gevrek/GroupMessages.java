@@ -71,7 +71,7 @@ public class GroupMessages extends FragmentActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment(group))
+                    .add(R.id.container, new PlaceholderFragment(group),"groupmessages")
                     .commit();
         }
     }
@@ -95,6 +95,25 @@ public class GroupMessages extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                //Refresh fragment
+                Bundle b = data.getExtras();
+                if(b.getString("reply").equals("reload")){
+                    //Refresh the fragment
+                    PlaceholderFragment tmp = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("groupmessages");
+                    tmp.reload();
+                }
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -104,6 +123,13 @@ public class GroupMessages extends FragmentActivity {
         ProgressBar bar;
         String reply;
         LoadMessages task;
+
+        public void reload(){
+            bar.setVisibility(View.VISIBLE);
+            vies.setVisibility(View.GONE);
+            task = new LoadMessages();
+            task.execute();
+        }
 
         @Override
         public void onPause(){
@@ -138,7 +164,7 @@ public class GroupMessages extends FragmentActivity {
                 if(task.getStatus() == AsyncTask.Status.FINISHED){
                     Intent intent = new Intent(getActivity(), PostActivity.class);
                     intent.putExtra("reply",reply);
-                    startActivity(intent);
+                    getActivity().startActivityForResult(intent,1);
                     return true;
                 }
             }
@@ -250,8 +276,8 @@ public class GroupMessages extends FragmentActivity {
                             intent.putCharSequenceArrayListExtra("list",tmp);
                             intent.putCharSequenceArrayListExtra("headers",tmp1);
 
-                            intent.putExtra("message",i);
-                            startActivity(intent);
+                            intent.putExtra("message", i);
+                            getActivity().startActivityForResult(intent, 1);
 
                         }
                     });

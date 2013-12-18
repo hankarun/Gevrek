@@ -211,9 +211,14 @@ public class PostActivity extends FragmentActivity {
                 if(!string.equals("")){
                     //Check for success,
                     //Return for refresh
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("return","reload");
+                    getActivity().setResult(RESULT_OK, returnIntent);
                     getActivity().finish();
                 }else{
                     Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+                    Intent returnIntent = new Intent();
+                    getActivity().setResult(RESULT_CANCELED, returnIntent);
                     getActivity().finish();
                 }
 

@@ -276,6 +276,7 @@ public class NewsGroupEdit extends FragmentActivity {
             @Override
             protected void onPostExecute(String html) {
                 Intent returnIntent = new Intent();
+                returnIntent.putExtra("type","group");
                 getActivity().setResult(RESULT_OK, returnIntent);
                 getActivity().finish();
             }

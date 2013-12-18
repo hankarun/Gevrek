@@ -101,7 +101,8 @@ public class MainActivity extends FragmentActivity
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                //Refresh fragment
-                NewsgroupFragment tmp = (NewsgroupFragment) getSupportFragmentManager().findFragmentByTag("group");
+                Bundle b = data.getExtras();
+                NewsgroupFragment tmp = (NewsgroupFragment) getSupportFragmentManager().findFragmentByTag(b.getString("type"));
                 tmp.reload();
             }
             if (resultCode == RESULT_CANCELED) {

@@ -102,6 +102,22 @@ public class MessageRead extends FragmentActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                //Finish the fragment and refresh the other
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("return","reload");
+                setResult(RESULT_OK, returnIntent);
+                finish();
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -128,7 +144,7 @@ public class MessageRead extends FragmentActivity {
         }
     }
 
-    
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -163,6 +179,8 @@ public class MessageRead extends FragmentActivity {
             return String.valueOf(position+1) + " / " + String.valueOf(tmp.size());
         }
     }
+
+
 
     /**
      * A placeholder fragment containing a simple view.
@@ -206,6 +224,8 @@ public class MessageRead extends FragmentActivity {
             super.onCreateOptionsMenu(menu, inflater);
         }
 
+
+
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             // Handle action bar item clicks here. The action bar will
@@ -217,7 +237,8 @@ public class MessageRead extends FragmentActivity {
                     Intent intent = new Intent(getActivity(), PostActivity.class);
 
                     intent.putExtra("reply", reply);
-                    startActivity(intent);
+                    getActivity().startActivityForResult(intent,1);
+
                     return true;
                 }
             }
