@@ -2,6 +2,7 @@ package com.hankarun.gevrek;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,6 +53,11 @@ public class Login extends FragmentActivity {
                     .add(R.id.container, new LoginFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
     }
 
 

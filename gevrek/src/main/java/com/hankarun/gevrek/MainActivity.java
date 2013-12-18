@@ -2,6 +2,7 @@ package com.hankarun.gevrek;
 
 import android.app.ActionBar;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,6 +28,11 @@ public class MainActivity extends FragmentActivity
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
             getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

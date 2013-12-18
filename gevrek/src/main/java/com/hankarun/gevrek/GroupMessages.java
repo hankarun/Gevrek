@@ -2,6 +2,7 @@ package com.hankarun.gevrek;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,11 @@ public class GroupMessages extends FragmentActivity {
                     .add(R.id.container, new PlaceholderFragment(group))
                     .commit();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hankarun.gevrek"
-    android:versionCode="17"
+    android:versionCode="18"
     android:versionName="4.0" >
 
     <uses-sdk
@@ -18,7 +18,8 @@
         android:debuggable="false">
         <activity
             android:name="com.hankarun.gevrek.Login"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,31 +27,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hankarun.gevrek.MainActivity">
+            android:name="com.hankarun.gevrek.MainActivity"
+            android:configChanges="orientation">
         </activity>
         <activity
             android:name="com.hankarun.gevrek.Homeworks"
-            android:parentActivityName="MainActivity" >
+            android:parentActivityName="MainActivity"
+            android:configChanges="orientation">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
         <activity
             android:name="com.hankarun.gevrek.GroupMessages"
-            android:parentActivityName="MainActivity">
+            android:parentActivityName="MainActivity"
+            android:configChanges="orientation">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
         <activity
             android:name="com.hankarun.gevrek.MessageRead"
-            android:label="@string/title_activity_message_read" >
+            android:label="@string/title_activity_message_read"
+            android:parentActivityName="GroupMessages"
+            android:configChanges="orientation">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="GroupMessages" />
         </activity>
         <activity
-            android:name="com.hankarun.gevrek.PostActivity">
+            android:name="com.hankarun.gevrek.PostActivity"
+            android:configChanges="orientation">
         </activity>
     </application>
 

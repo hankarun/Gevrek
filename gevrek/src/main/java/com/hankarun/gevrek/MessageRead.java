@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -105,6 +106,11 @@ public class MessageRead extends FragmentActivity {
         mViewPager.setOnPageChangeListener(new MyPageChangeListener());
         mViewPager.setCurrentItem(link);
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
     }
 
     private class MyPageChangeListener extends ViewPager.SimpleOnPageChangeListener {

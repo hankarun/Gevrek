@@ -2,6 +2,7 @@ package com.hankarun.gevrek;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -64,9 +65,11 @@ public class PostActivity extends FragmentActivity {
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+    }
+
     public static class PlaceholderFragment extends Fragment {
         final String link;
         String quote;
