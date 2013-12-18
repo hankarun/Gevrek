@@ -39,6 +39,8 @@
     <string name="reply">Reply</string>
     <string name="new_post">New</string>
     <string name="no_hmw">There is no Homework listed.</string>
-
+    <string name="title_activity_news_group_edit">NewsGroupEdit</string>
+    <string name="search">Search</string>
+    <string name="save">Save</string>
 
 </resources>

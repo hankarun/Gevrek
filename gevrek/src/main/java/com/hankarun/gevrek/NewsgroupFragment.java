@@ -11,6 +11,9 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -53,8 +56,41 @@ public class NewsgroupFragment extends Fragment{
 
     private ProgressBar bar;
 
+    public void reload(){
+        listview.setVisibility(View.GONE);
+        bar.setVisibility(View.VISIBLE);
+        task = new Loadgroups();
+        task.execute();
+    }
+
 
     public NewsgroupFragment() {
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.group_messages, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            if(task.getStatus() == AsyncTask.Status.FINISHED){
+                Intent intent = new Intent(getActivity(), NewsGroupEdit.class);
+                getActivity().startActivityForResult(intent, 1);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -170,7 +206,6 @@ public class NewsgroupFragment extends Fragment{
                     groups.add(temp);
 
                 }
-                Log.d("size", groups.size()+"");
                 adapter = new ExpandableListAdapter(getActivity().getApplicationContext(),groups);
                 listview.setAdapter(adapter);
                 for(int x = 0; x < groups.size(); x++)
