@@ -208,9 +208,12 @@ public class PostActivity extends FragmentActivity {
 
             @Override
             protected  void onPostExecute(String string){
-                if(string != null){
+                if(!string.equals("")){
                     //Check for success,
                     //Return for refresh
+                    getActivity().finish();
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 }
 

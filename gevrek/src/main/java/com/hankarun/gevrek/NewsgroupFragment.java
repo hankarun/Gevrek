@@ -148,48 +148,54 @@ public class NewsgroupFragment extends Fragment{
         List<Newsgroup> groups;
         @Override
         protected void onPostExecute(String html) {
-            groups = new ArrayList<Newsgroup>();
+            if(!html.equals("")){
+                groups = new ArrayList<Newsgroup>();
 
-            Document doc = Jsoup.parse(html);
-            Elements groupblock = doc.select(".np_index_groupblock:not(:has(div))");
-            Elements grouphead = doc.select("div.np_index_grouphead");
-            int a = 0;
-            for (Element div : groupblock) {
-                Newsgroup temp = new Newsgroup();
-                temp.name = grouphead.get(a++).text();
-                Elements rews = div.select("a");
-                Elements smalls = div.select("small");
-                int b = 0;
-                for (Element link : rews){
-                    String color = "";
-                    if(smalls.get(b).select("font").size()>0)
-                        color = smalls.get(b).select("font").attr("color");
-                    temp.addUrl(link.text(), link.attr("href"),smalls.get(b++).text(),color);
+                Document doc = Jsoup.parse(html);
+                Elements groupblock = doc.select(".np_index_groupblock:not(:has(div))");
+                Elements grouphead = doc.select("div.np_index_grouphead");
+                int a = 0;
+                for (Element div : groupblock) {
+                    Newsgroup temp = new Newsgroup();
+                    temp.name = grouphead.get(a++).text();
+                    Elements rews = div.select("a");
+                    Elements smalls = div.select("small");
+                    int b = 0;
+                    for (Element link : rews){
+                        String color = "";
+                        if(smalls.get(b).select("font").size()>0)
+                            color = smalls.get(b).select("font").attr("color");
+                        temp.addUrl(link.text(), link.attr("href"),smalls.get(b++).text(),color);
+                    }
+                    groups.add(temp);
+
                 }
-                groups.add(temp);
-
-            }
-            Log.d("size", groups.size()+"");
-            adapter = new ExpandableListAdapter(getActivity().getApplicationContext(),groups);
-            listview.setAdapter(adapter);
-            for(int x = 0; x < groups.size(); x++)
-                listview.expandGroup(x);
-            listview.setGroupIndicator(null);
-            listview.setVisibility(View.VISIBLE);
-            bar.setVisibility(View.GONE);
-            listview.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
-            {
-                @Override
-                public boolean onChildClick(ExpandableListView parent, View v, int group_position, int child_position, long id)
+                Log.d("size", groups.size()+"");
+                adapter = new ExpandableListAdapter(getActivity().getApplicationContext(),groups);
+                listview.setAdapter(adapter);
+                for(int x = 0; x < groups.size(); x++)
+                    listview.expandGroup(x);
+                listview.setGroupIndicator(null);
+                listview.setVisibility(View.VISIBLE);
+                bar.setVisibility(View.GONE);
+                listview.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
                 {
-                    //Toast.makeText(getActivity().getApplicationContext(), groups.get(group_position).getUrl(child_position).url, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), GroupMessages.class);
-                    intent.putExtra("name",groups.get(group_position).getUrl(child_position).name);
-                    intent.putExtra("link",groups.get(group_position).getUrl(child_position).url);
-                    startActivity(intent);
-                    return false;
-                }
-            });
+                    @Override
+                    public boolean onChildClick(ExpandableListView parent, View v, int group_position, int child_position, long id)
+                    {
+                        //Toast.makeText(getActivity().getApplicationContext(), groups.get(group_position).getUrl(child_position).url, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), GroupMessages.class);
+                        intent.putExtra("name",groups.get(group_position).getUrl(child_position).name);
+                        intent.putExtra("link",groups.get(group_position).getUrl(child_position).url);
+                        startActivity(intent);
+                        return false;
+                    }
+                });
+            }else{
+                Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+
         }
 
 

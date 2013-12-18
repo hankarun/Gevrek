@@ -207,56 +207,62 @@ public class GroupMessages extends FragmentActivity {
 
             @Override
             protected void onPostExecute(String html) {
-                array = new ArrayList<MessageHeader>();
-                Document doc = Jsoup.parse(html);
-                Elements table = doc.select("table.np_thread_table").select("tr");
-                reply = doc.select("a.np_button").get(0).attr("href");
-                table.remove(0);
-                for(Element s : table){
-                    MessageHeader tmp = new MessageHeader();
-                    Elements trs = s.select("td");
-                    if(s.select("font").size()>0)
-                        tmp.color = s.select("font").attr("color");
-                    tmp.date = trs.get(0).text();
-                    tmp.read = trs.get(1).select("a").attr("class").equals("read");
-                    for(Element dd:trs.get(1).select("img"))
-                        tmp.images.add(dd.attr("alt"));
-                    tmp.header = trs.get(1).text();
-                    tmp.href = trs.get(1).select("a").attr("href");
-                    tmp.author = trs.get(3).text();
-                    array.add(tmp);
-                }
-                MyBaseAdapter adapters = new MyBaseAdapter(getActivity().getApplicationContext(),array);
-                vies.setAdapter(adapters);
-
-                vies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-                        ArrayList<CharSequence> tmp = new ArrayList<CharSequence>();
-                        ArrayList<CharSequence> tmp1 = new ArrayList<CharSequence>();
-
-                        for(int x = 0; x < vies.getAdapter().getCount(); x++){
-                            Object o = vies.getItemAtPosition(x);
-                            MessageHeader tmps = (MessageHeader) o;
-                            tmp.add(tmps.href);
-                            tmp1.add(tmps.header);
-                        }
-
-                        Intent intent = new Intent(getActivity(), MessageRead.class);
-
-                        intent.putCharSequenceArrayListExtra("list",tmp);
-                        intent.putCharSequenceArrayListExtra("headers",tmp1);
-
-                        intent.putExtra("message",i);
-                        startActivity(intent);
-
+                if(!html.equals("")){
+                    array = new ArrayList<MessageHeader>();
+                    Document doc = Jsoup.parse(html);
+                    Elements table = doc.select("table.np_thread_table").select("tr");
+                    reply = doc.select("a.np_button").get(0).attr("href");
+                    table.remove(0);
+                    for(Element s : table){
+                        MessageHeader tmp = new MessageHeader();
+                        Elements trs = s.select("td");
+                        if(s.select("font").size()>0)
+                            tmp.color = s.select("font").attr("color");
+                        tmp.date = trs.get(0).text();
+                        tmp.read = trs.get(1).select("a").attr("class").equals("read");
+                        for(Element dd:trs.get(1).select("img"))
+                            tmp.images.add(dd.attr("alt"));
+                        tmp.header = trs.get(1).text();
+                        tmp.href = trs.get(1).select("a").attr("href");
+                        tmp.author = trs.get(3).text();
+                        array.add(tmp);
                     }
-                });
+                    MyBaseAdapter adapters = new MyBaseAdapter(getActivity().getApplicationContext(),array);
+                    vies.setAdapter(adapters);
 
-                bar.setVisibility(View.GONE);
-                vies.setVisibility(View.VISIBLE);
+                    vies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+                            ArrayList<CharSequence> tmp = new ArrayList<CharSequence>();
+                            ArrayList<CharSequence> tmp1 = new ArrayList<CharSequence>();
+
+                            for(int x = 0; x < vies.getAdapter().getCount(); x++){
+                                Object o = vies.getItemAtPosition(x);
+                                MessageHeader tmps = (MessageHeader) o;
+                                tmp.add(tmps.href);
+                                tmp1.add(tmps.header);
+                            }
+
+                            Intent intent = new Intent(getActivity(), MessageRead.class);
+
+                            intent.putCharSequenceArrayListExtra("list",tmp);
+                            intent.putCharSequenceArrayListExtra("headers",tmp1);
+
+                            intent.putExtra("message",i);
+                            startActivity(intent);
+
+                        }
+                    });
+
+                    bar.setVisibility(View.GONE);
+                    vies.setVisibility(View.VISIBLE);
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+
             }
 
 

@@ -286,46 +286,47 @@ public class MessageRead extends FragmentActivity {
                     e.printStackTrace();
                 }
 
-
-
-
-
                 return "";
             }
 
 
             @Override
             protected void onPostExecute(String html) {
-                Document doc = Jsoup.parse(html);
+                if(!html.equals("")){
+                    Document doc = Jsoup.parse(html);
 
-                avatar.setImageBitmap(bmp);
+                    avatar.setImageBitmap(bmp);
 
-                reply = doc.select("a.np_button").attr("href");
+                    reply = doc.select("a.np_button").attr("href");
 
-                String tmp = doc.select("div.np_article_header").text();
-                int sbb = tmp.indexOf("Subject:");
-                int fbb = tmp.indexOf("From:");
-                int dbb = tmp.indexOf("Date:");
-                String attach = "";
-                if(tmp.indexOf("Attachments:")>0){
-                    attach = getString(R.string.attachments) + doc.select("div.np_article_header").select("a").get(1).toString();
+                    String tmp = doc.select("div.np_article_header").text();
+                    int sbb = tmp.indexOf("Subject:");
+                    int fbb = tmp.indexOf("From:");
+                    int dbb = tmp.indexOf("Date:");
+                    String attach = "";
+                    if(tmp.indexOf("Attachments:")>0){
+                        attach = getString(R.string.attachments) + doc.select("div.np_article_header").select("a").get(1).toString();
+                    }
+
+                    title = tmp.substring(sbb +9, fbb -1);
+
+                    String fpps = tmp.substring(fbb,tmp.length());
+
+                    from.setText(fpps.substring(6, fpps.indexOf("(") - 1)); //author
+                    date.setText(tmp.substring(dbb + 6, dbb+20)); //date
+
+                    Elements bod  = doc.select("div.np_article_body");
+                    String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='iso-8859-9' /></head><body>";
+                    String end = "</body></html>";
+                    body.loadData(start + attach + bod.toString() + end, "text/html; charset=UTF-8", null);
+                    body.setBackgroundColor(0x00000000);
+                    lm1.setVisibility(View.VISIBLE);
+                    lm2.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
                 }
-
-                title = tmp.substring(sbb +9, fbb -1);
-
-                String fpps = tmp.substring(fbb,tmp.length());
-
-                from.setText(fpps.substring(6, fpps.indexOf("(") - 1)); //author
-                date.setText(tmp.substring(dbb + 6, dbb+20)); //date
-
-                Elements bod  = doc.select("div.np_article_body");
-                String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='iso-8859-9' /></head><body>";
-                String end = "</body></html>";
-                body.loadData(start + attach + bod.toString() + end, "text/html; charset=UTF-8", null);
-                body.setBackgroundColor(0x00000000);
-                lm1.setVisibility(View.VISIBLE);
-                lm2.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
             }
 
 

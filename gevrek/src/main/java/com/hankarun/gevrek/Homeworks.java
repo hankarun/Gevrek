@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -143,31 +144,36 @@ public class Homeworks extends FragmentActivity {
 
             @Override
             protected void onPostExecute(String html) {
-                Document doc = Jsoup.parse(html);
-                ArrayList<HomeWorks> hmws = new ArrayList<HomeWorks>();
+                if(!html.equals("")){
+                    Document doc = Jsoup.parse(html);
+                    ArrayList<HomeWorks> hmws = new ArrayList<HomeWorks>();
 
-                Elements table = doc.select("table.cow");
-                Elements others = table.select("tr");
-                if(!others.toString().contains("The list is empty....")){
-                    for(int x=3; x < others.size(); x++){
-                        HomeWorks tmp = new HomeWorks();
-                        tmp.id = others.get(x).select("td").get(0).text();
-                        tmp.name = others.get(x).select("td").get(1).text();
-                        tmp.deadline = others.get(x).select("td").get(2).text();
-                        tmp.greaded = others.get(x).select("td").get(3).text();
-                        if(others.get(x).select("td").get(5).text().isEmpty())
-                            tmp.greade = "-";
-                        else
-                            tmp.greade = others.get(x).select("td").get(5).text();
-                        tmp.avarage = others.get(x).select("td").get(6).text();
-                        hmws.add(tmp);
+                    Elements table = doc.select("table.cow");
+                    Elements others = table.select("tr");
+                    if(!others.toString().contains("The list is empty....")){
+                        for(int x=3; x < others.size(); x++){
+                            HomeWorks tmp = new HomeWorks();
+                            tmp.id = others.get(x).select("td").get(0).text();
+                            tmp.name = others.get(x).select("td").get(1).text();
+                            tmp.deadline = others.get(x).select("td").get(2).text();
+                            tmp.greaded = others.get(x).select("td").get(3).text();
+                            if(others.get(x).select("td").get(5).text().isEmpty())
+                                tmp.greade = "-";
+                            else
+                                tmp.greade = others.get(x).select("td").get(5).text();
+                            tmp.avarage = others.get(x).select("td").get(6).text();
+                            hmws.add(tmp);
+                        }
                     }
-                }
 
-                MyOtherAdapter adapter = new MyOtherAdapter(getActivity().getApplicationContext(),hmws);
-                listView.setAdapter(adapter);
-                bar.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
+                    MyOtherAdapter adapter = new MyOtherAdapter(getActivity().getApplicationContext(),hmws);
+                    listView.setAdapter(adapter);
+                    bar.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.network_problem, Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
             }
         }
         public class HomeWorks{

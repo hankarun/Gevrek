@@ -15,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -105,35 +106,40 @@ public class CoursesFragment extends Fragment{
 
         @Override
         protected void onPostExecute(String html) {
-            Document doc = Jsoup.parse(html);
-            doc.setBaseUri("https://cow.ceng.metu.edu.tr");
+            if(!html.equals("")){
+                Document doc = Jsoup.parse(html);
+                doc.setBaseUri("https://cow.ceng.metu.edu.tr");
 
-            ArrayList<Pairs> lnames = new ArrayList<Pairs>();
-            Map<String,String> lcodes = new HashMap<String,String>();
+                ArrayList<Pairs> lnames = new ArrayList<Pairs>();
+                Map<String,String> lcodes = new HashMap<String,String>();
 
-            Elements names = doc.select("div");
-            Element divs = null;
-            for(Element e:names){
-                if(e.attr("id").equals("mtm_menu_horizontal"))
-                    divs = e;
+                Elements names = doc.select("div");
+                Element divs = null;
+                for(Element e:names){
+                    if(e.attr("id").equals("mtm_menu_horizontal"))
+                        divs = e;
+                }
+                Elements rnamesd = doc.select("td.content").select("tr").select("td");
+
+                int x = 0;
+                while(x<rnamesd.size()){
+                    lcodes.put(rnamesd.get(x).text(), rnamesd.get(x+1).text());
+                    x += 2;
+                }
+                Elements courses = divs.select("a");
+                courses.remove(0);
+                for(Element t: courses){
+                    lnames.add(new Pairs(t.text(),lcodes.get(t.text()), t.attr("abs:href")));
+
+                }
+                MyAdapter adapter = new MyAdapter(getActivity().getApplicationContext(), lnames);
+                listView.setAdapter(adapter);
+                listView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }else{
+                Toast.makeText(getActivity().getApplicationContext(), R.string.network_problem, Toast.LENGTH_SHORT).show();
+                getActivity().finish();
             }
-            Elements rnamesd = doc.select("td.content").select("tr").select("td");
-
-            int x = 0;
-            while(x<rnamesd.size()){
-                lcodes.put(rnamesd.get(x).text(), rnamesd.get(x+1).text());
-                x += 2;
-            }
-            Elements courses = divs.select("a");
-            courses.remove(0);
-            for(Element t: courses){
-                lnames.add(new Pairs(t.text(),lcodes.get(t.text()), t.attr("abs:href")));
-
-            }
-            MyAdapter adapter = new MyAdapter(getActivity().getApplicationContext(), lnames);
-            listView.setAdapter(adapter);
-            listView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
         }
 
 

@@ -169,6 +169,7 @@ public class Login extends FragmentActivity {
                     break;
                 case 3:
                     //Toast to show network connection failure
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
                     getActivity().finish();
             }
         }
