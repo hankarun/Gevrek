@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import android.app.Activity;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -21,11 +18,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -50,7 +44,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class MessageRead extends FragmentActivity {
@@ -320,7 +313,9 @@ public class MessageRead extends FragmentActivity {
 
                 title = tmp.substring(sbb +9, fbb -1);
 
-                from.setText(tmp.substring(fbb+6, tmp.indexOf("(")-1)); //author
+                String fpps = tmp.substring(fbb,tmp.length());
+
+                from.setText(fpps.substring(6, fpps.indexOf("(") - 1)); //author
                 date.setText(tmp.substring(dbb + 6, dbb+20)); //date
 
                 Elements bod  = doc.select("div.np_article_body");
