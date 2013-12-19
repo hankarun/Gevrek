@@ -336,14 +336,26 @@ public class GroupMessages extends FragmentActivity {
                 return i;
             }
 
+            private class ImageHolder{
+                public LinearLayout images;
+            }
+
             @Override
             public View getView(int i, View view, ViewGroup viewGroup) {
+                ImageHolder tmps = new ImageHolder();
                 if (view == null) {
                     LayoutInflater infalInflater = (LayoutInflater) this.context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     view = infalInflater.inflate(R.layout.message_item, null);
-                }
 
+                    LinearLayout layout = (LinearLayout) view.findViewById(R.id.imageLayout);
+                    tmps.images = layout;
+
+                    view.setTag(tmps);
+
+                }else{
+                    tmps = (ImageHolder) view.getTag();
+                }
                 TextView body = (TextView) view.findViewById(R.id.body);
                 TextView date = (TextView) view.findViewById(R.id.date);
                 TextView author = (TextView) view.findViewById(R.id.author);
@@ -351,37 +363,40 @@ public class GroupMessages extends FragmentActivity {
 
                 String header = "<?xml version=\"1.0\" encoding=\"iso-8859-9\" ?>";
                 String imgs = headers.get(i).getImg();
-                imgs.replaceAll("/*","-");
-                /*for(int x=0; x<imgs.length(); x++){
+
+                tmps.images.removeAllViews();
+
+                for(int x=0; x<imgs.length(); x++){
                     ImageView tmp = new ImageView(context);
                     if(imgs.charAt(x) == ' ')
-                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.e));
+                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.b));
                     else
                     if(imgs.charAt(x) == '*')
-                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.k2));
+                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.s));
                     else
                     if(imgs.charAt(x) == 'o')
-                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.k1));
+                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.n));
                     else
                     if(imgs.charAt(x) == '+')
-                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.t));
+                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.tt));
                     else
                     if(imgs.charAt(x) == '-')
-                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.s));
+                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.g));
                     else
                     if(imgs.charAt(x) == '|')
                         tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.l));
                     else
                     if(imgs.charAt(x) == '`')
-                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.li));
+                        tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.k));
 
-                    LayoutParams params = new LayoutParams(30,55);
+                    LayoutParams params = new LayoutParams(40,40);
 
                     tmp.setLayoutParams(params);
                     tmp.setFocusable(false);
                     tmp.setFocusableInTouchMode(false);
-                    layout.addView(tmp,x+1);
-                }*/
+                    tmps.images.addView(tmp, x);
+                }
+
                 String reads;
                 if(headers.get(i).read)
                     reads = "<font color=\"#999900\">"+header + headers.get(i).header+"</font>";
@@ -392,7 +407,7 @@ public class GroupMessages extends FragmentActivity {
                     layout.setBackgroundColor(Color.parseColor("#EEEEEE"));
                 else
                     layout.setBackgroundColor(Color.parseColor("#ffffff"));
-                body.setText(Html.fromHtml(imgs + " " + reads));
+                body.setText(Html.fromHtml(reads));
                 date.setText(Html.fromHtml("<font color=\""+ headers.get(i).color +"\">" +headers.get(i).date+ "</font>"));
                 author.setText(headers.get(i).author);
 
