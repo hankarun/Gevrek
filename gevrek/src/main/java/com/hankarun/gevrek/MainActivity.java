@@ -59,8 +59,10 @@ public class MainActivity extends FragmentActivity
             return true;
         }
         if(id == R.id.section3) {
-            deleteUser();
-            finish();
+            Fragment fragment2 = new SettingsFragment();
+            fragment2.setHasOptionsMenu(true);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment2, "lecture").commit();
             return true;
         }
         if (id == R.id.section4) {
@@ -131,27 +133,18 @@ public class MainActivity extends FragmentActivity
                 mTitle = getString(R.string.title_section2);
                 break;
             case 3:
-                deleteUser();
+                Fragment fragment2 = new SettingsFragment();
+                fragment2.setHasOptionsMenu(true);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, fragment2, "lecture").commit();
+                break;
             case 4:
                 finish();
         }
 
     }
 
-    private void deleteUser(){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor edit = sp.edit();
 
-        edit.putString("user_name", "");
-        edit.putString("user_password", "");
-
-        edit.putString("name_user","");
-        edit.putString("email_user","");
-
-
-        edit.putBoolean("save_state",false);
-        edit.commit();
-    }
 
     public void onSectionAttached(int number) {
         switch (number) {

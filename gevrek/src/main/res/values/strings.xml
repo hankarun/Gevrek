@@ -17,7 +17,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_section1">Newsgroups</string>
     <string name="title_section2">Notes</string>
-    <string name="title_section3">Delete User</string>
+    <string name="title_section3">Settings</string>
     <string name="title_section4">Log Out</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -42,5 +42,7 @@
     <string name="title_activity_news_group_edit">NewsGroupEdit</string>
     <string name="search">Search</string>
     <string name="save">Save</string>
+    <string name="name">Current User:</string>
+    <string name="delete_user">Delete User</string>
 
 </resources>
