@@ -44,5 +44,14 @@
     <string name="save">Save</string>
     <string name="name">Current User:</string>
     <string name="delete_user">Delete User</string>
+    <string name="deadline">Deadline</string>
+    <string name="track_hmw">Check for note updates.</string>
+    <string name="hwm_deadline_passed">Deadline is passed.</string>
+    <string name="schedule">Schedule</string>
+    <string name="month">Month</string>
+    <string name="week">Week</string>
+    <string name="day">Day</string>
+    <string name="hour">Hour</string>
+    <string name="still">Still</string>
 
 </resources>

@@ -84,9 +84,11 @@
     </content>
     <orderEntry type="jdk" jdkName="Android 4.2.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="joda-time-2.3-sources" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.0" level="project" />
     <orderEntry type="library" exported="" name="jsoup-1.7.2" level="project" />
     <orderEntry type="library" exported="" name="support-v13-19.0.0" level="project" />
+    <orderEntry type="library" exported="" name="joda-time-2.3" level="project" />
     <orderEntry type="library" exported="" name="ComAndroidSupportAppcompatV71900.aar" level="project" />
   </component>
 </module>
