@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hankarun.gevrek"
-    android:versionCode="20"
+    android:versionCode="22"
     android:versionName="4.0" >
 
     <uses-sdk
@@ -9,13 +9,29 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> -->
 
     <application
         android:allowBackup="true"
-        android:debuggable="true"
+        android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <service
+            android:name="UpdateService"
+            android:process=":my_service"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name"
+            >
+        </service>
+
+        <receiver android:name=".BootReciever"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.hankarun.gevrek.Login"
             android:configChanges="orientation"

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gevrek</string>
+    <string name="action_settings">Seçenekler</string>
+    <string name="cow_manager">COW Yardımcısı</string>
+    <string name="cow_username">COW Kullanıcı Adı</string>
+    <string name="cow_password">COW Parolası</string>
+    <string name="username">Kullanıcı Adı</string>
+    <string name="password">Parola</string>
+    <string name="save_password">Parolayı Kaydet</string>
+    <string name="login">Bağlan</string>
+    <string name="loading">Yükleniyor</string>
+    <string name="login_success">Bağlantı Başarılı</string>
+    <string name="check_creds">Hatalı Kullanıcı Adı veya Parola</string>
+    <string name="network_problem">Bağlantı Hatası</string>
+    <string name="title_activity_main">Gevrek</string>
+    <string name="title_section1">Habergrupları</string>
+    <string name="title_section2">Ödevler</string>
+    <string name="title_section3">Seçenekler</string>
+    <string name="title_section4">Çıkış</string>
+    <string name="navigation_drawer_open">Yönetim panelini aç</string>
+    <string name="navigation_drawer_close">Yönetim panelini kapat</string>
+    <string name="title_activity_group_messages">Mesajlar</string>
+    <string name="title_activity_message_read">Mesajlar</string>
+    <string name="subjet_text">Konu</string>
+    <string name="from_text">Gönderen</string>
+    <string name="date">Tarih</string>
+    <string name="attachments">Eklentiler: </string>
+    <string name="title_activity_post">Yeni</string>
+    <string name="body_text">Metin</string>
+    <string name="quote">Alıntıyı Ekle</string>
+    <string name="send">Göder</string>
+    <string name="cancel">Vazgeç</string>
+    <string name="next">Sonraki</string>
+    <string name="previus">Önceki</string>
+    <string name="reply">Cevapla</string>
+    <string name="new_post">Yeni</string>
+    <string name="no_hmw">Bu derse ait ödev bulunamadı</string>
+    <string name="title_activity_news_group_edit">Grup Ayarları</string>
+    <string name="search">Ara</string>
+    <string name="save">Kaydet</string>
+    <string name="name">Kayıtlı Kullanıcı:</string>
+    <string name="delete_user">Kullanıcıyı Sil</string>
+    <string name="deadline">Bitiş Tarihi</string>
+    <string name="track_hmw">Check for note updates.</string>
+    <string name="hwm_deadline_passed">Ödevin teslim tarihi geçmiş.</string>
+    <string name="schedule">Hatırlat</string>
+    <string name="month">Ay</string>
+    <string name="week">Hafta</string>
+    <string name="day">Gün</string>
+    <string name="hour">Saat</string>
+    <string name="still">Daha</string>
+    <string name="please_fill">Boş bırakılamaz.</string>
+    <string name="use_only_wifi">Use only wifi when loading.</string>
+    <string name="background_updates">Background updates.</string>
+    <string name="scheduled_message">Send Scheduled Message</string>
+    <string name="service_name">updateService</string>
+
+</resources>

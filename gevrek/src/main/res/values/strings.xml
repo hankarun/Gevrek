@@ -21,9 +21,7 @@
     <string name="title_section4">Log Out</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
     <string name="title_activity_group_messages">GroupMessages</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_message_read">MessageRead</string>
     <string name="subjet_text">Subject</string>
     <string name="from_text">From</string>
@@ -54,5 +52,9 @@
     <string name="hour">Hour</string>
     <string name="still">Still</string>
     <string name="please_fill">Error, Must Fill.</string>
+    <string name="use_only_wifi">Use only wifi when loading.</string>
+    <string name="background_updates">Background updates.</string>
+    <string name="scheduled_message">Send Scheduled Message</string>
+    <string name="service_name">updateService</string>
 
 </resources>
