@@ -1,22 +1,17 @@
 package com.hankarun.gevrek;
 
-import android.app.Activity;
-import android.app.ActionBar;
-import android.content.res.Configuration;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;

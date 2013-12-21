@@ -1,12 +1,12 @@
 package com.hankarun.gevrek;
 
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,8 +91,7 @@ public class CoursesFragment extends Fragment{
                 post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = client.execute(post);
 
-                String html = EntityUtils.toString(response.getEntity());
-                return html;
+                return EntityUtils.toString(response.getEntity());
 
 
             } catch (IOException e) {
