@@ -28,7 +28,8 @@
             android:id="@+id/fromEdit"
             android:layout_weight="0"
             android:background="@drawable/custom_edittext"
-            android:padding="8dip" />
+            android:padding="8dip"
+            android:editable="false" />
 
         <TextView
             android:layout_width="match_parent"

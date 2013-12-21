@@ -1,7 +1,5 @@
 package com.hankarun.gevrek;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.provider.CalendarContract;
 import android.support.v4.app.Fragment;
@@ -15,11 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,13 +40,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -89,9 +80,7 @@ public class Homeworks extends FragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         if(id == android.R.id.home){
             finish();
@@ -165,7 +154,7 @@ public class Homeworks extends FragmentActivity {
                                 calIntent.putExtra(CalendarContract.Events.TITLE, hmw.name + " - " + hmw.course);
                                 calIntent.putExtra(CalendarContract.Events.EVENT_LOCATION, "CENG");
                                 GregorianCalendar calDate = dead.toGregorianCalendar();
-                                calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
+                                calIntent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false);
                                 calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
                                         calDate.getTimeInMillis());
                                 calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
@@ -227,8 +216,6 @@ public class Homeworks extends FragmentActivity {
                     Document doc = Jsoup.parse(html);
                     ArrayList<HomeWorks> hmws = new ArrayList<HomeWorks>();
 
-                    String cours = "";
-
                     Elements table = doc.select("table.cow");
                     Elements others = table.select("tr");
 
@@ -240,7 +227,7 @@ public class Homeworks extends FragmentActivity {
                             tmp.deadline = others.get(x).select("td").get(2).text();
                             tmp.greaded = others.get(x).select("td").get(3).text();
                             tmp.link = others.get(x).select("td").get(4).select("a").attr("href");
-                            if(others.get(x).select("td").get(5).text().isEmpty())
+                            if(others.get(x).select("td").get(5).text().equals(""))
                                 tmp.greade = "-";
                             else
                                 tmp.greade = others.get(x).select("td").get(5).text();

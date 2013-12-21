@@ -389,7 +389,8 @@ public class GroupMessages extends FragmentActivity {
                     if(imgs.charAt(x) == '`')
                         tmp.setImageDrawable(view.getResources().getDrawable(R.drawable.k));
 
-                    LayoutParams params = new LayoutParams(40,40);
+                    LayoutParams params = new LayoutParams(40, ViewGroup.LayoutParams.MATCH_PARENT);
+                    params.height = ViewGroup.LayoutParams.MATCH_PARENT;
 
                     tmp.setLayoutParams(params);
                     tmp.setFocusable(false);

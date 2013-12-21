@@ -142,9 +142,16 @@ public class PostActivity extends FragmentActivity {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    postBar.setVisibility(View.VISIBLE);
-                    postLayout.setVisibility(View.GONE);
-                    new PostReply().execute();
+                    if(subject.getText().equals(""))
+                        subject.setError(getString(R.string.please_fill));
+                    else
+                    if(body.getText().equals(""))
+                        body.setError(getString(R.string.please_fill));
+                    else{
+                        postBar.setVisibility(View.VISIBLE);
+                        postLayout.setVisibility(View.GONE);
+                        new PostReply().execute();
+                    }
                 }
             });
 
