@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,9 @@ public class Login extends FragmentActivity {
     }
 
 
-    public static class LoginFragment extends Fragment {
+
+
+    public static class LoginFragment extends Fragment implements JavaAsyncCompleteListener{
 
         LinearLayout greetings;
         LinearLayout loginform;
@@ -74,6 +77,8 @@ public class Login extends FragmentActivity {
         String uname;
         String upassword;
 
+        Fragment fragment = this;
+
         //function for init variables
         private void init(View rootView){
             greetings = (LinearLayout) rootView.findViewById(R.id.greetings);
@@ -89,7 +94,7 @@ public class Login extends FragmentActivity {
                 @Override
                 public void onClick(View view) {
                     hideForm();
-                    new Cowcreds().execute();
+                    startTask();
                 }
             });
         }
@@ -206,68 +211,46 @@ public class Login extends FragmentActivity {
             if(!checkcreds()){
                 new WaitSplash().execute();
             }else{
-                new Cowcreds().execute();
+                startTask();
             }
 
             return rootView;
         }
 
+        //Async Task for url fetch
+        private void startTask(){
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("cow_username", username.getText().toString()));
+            nameValuePairs
+                    .add(new BasicNameValuePair("cow_password", password.getText().toString()));
+            nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
+            new PageFetchAsync(this,1).execute(nameValuePairs);
+        }
 
-        private class Cowcreds extends AsyncTask<String, String, String> {
+        @Override
+        public void onTaskComplete(String html) {
+            Log.d("page", html);
+            if(!html.equals("")){
+                if(html.contains("Wrong login data!"))
+                    checkcow(2);
+                else{
+                    Document doc = Jsoup.parse(html);
+                    Element loginform = doc.getElementById("edit_auth");
 
-            @Override
-            protected String doInBackground(String... args) {
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://cow.ceng.metu.edu.tr/User/index.php");
+                    Elements inputElements = loginform.select("tr");
 
-                try {
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                    nameValuePairs.add(new BasicNameValuePair("cow_username", username.getText().toString()));
-                    nameValuePairs
-                            .add(new BasicNameValuePair("cow_password", password.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    SharedPreferences.Editor edit = sp.edit();
 
-                    post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                    HttpResponse response = client.execute(post);
+                    edit.putString("name_user", inputElements.get(5).select("td").text());
+                    edit.putString("email_user", inputElements.get(6).select("td").text());
+                    edit.putString("avatar", inputElements.get(20).select("a").attr("abs:href"));
+                    edit.commit();
 
-                    String html = EntityUtils.toString(response.getEntity());
-                    return html;
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    checkcow(1);
                 }
-
-
-                return "";
-            }
-            @Override
-            protected void onPostExecute(String html) {
-                if(!html.equals("")){
-                    if(html.contains("Wrong login data!"))
-                        checkcow(2);
-                    else{
-                        Document doc = Jsoup.parse(html);
-                        Element loginform = doc.getElementById("edit_auth");
-
-                        Elements inputElements = loginform.select("tr");
-
-                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        SharedPreferences.Editor edit = sp.edit();
-
-                        edit.putString("name_user", inputElements.get(5).select("td").text());
-                        edit.putString("email_user", inputElements.get(6).select("td").text());
-                        edit.putString("avatar", inputElements.get(20).select("a").attr("abs:href"));
-                        edit.commit();
-
-
-                        checkcow(1);
-
-                    }
-                }else
-                    checkcow(3);
-
-            }
+            }else
+                checkcow(3);
         }
 
         class WaitSplash extends AsyncTask<Void, Void, Void> {
