@@ -56,5 +56,13 @@
     <string name="background_updates">Background updates.</string>
     <string name="scheduled_message">Send Scheduled Message</string>
     <string name="service_name">updateService</string>
+    <string name="no_course_selected">No Course Selected</string>
+    <string name="avatar_options">Avatar Download Options</string>
+
+    <string-array name="data_status">
+        <item>Download with Wifi</item>
+        <item>Download with Wifi, 3G</item>
+        <item>Download with Wifi, 3G, Edge</item>
+    </string-array>
 
 </resources>

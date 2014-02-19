@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class CoursesFragment extends Fragment{
+public class CoursesFragment extends Fragment implements JavaAsyncCompleteListener{
 
     private ListView listView;
     private ProgressBar progressBar;
@@ -51,7 +51,7 @@ public class CoursesFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_courses, container, false);
         listView = (ListView) rootView.findViewById(R.id.courselist);
         progressBar = (ProgressBar) rootView.findViewById(R.id.courseProgress);
-        new Loadgroups().execute();
+        startTask();
         listView.setDivider(null);
         listView.setDividerHeight(10);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,58 +68,30 @@ public class CoursesFragment extends Fragment{
         return rootView;
     }
 
-    private class Loadgroups extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... args) {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-            String uname = settings.getString("user_name", "");
-            String upassword = settings.getString("user_password", "");
-
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("https://cow.ceng.metu.edu.tr/Courses/");
-
-            try {
-
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("cow_username", uname));
-                nameValuePairs
-                        .add(new BasicNameValuePair("cow_password", upassword));
-                nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
-
-                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                HttpResponse response = client.execute(post);
-
-                return EntityUtils.toString(response.getEntity());
+    //Async Task for url fetch
+    private void startTask(){
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+        new PageFetchAsync(this,HttpPages.courses_page,getActivity()).execute(nameValuePairs);
+    }
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
+    @Override
+    public void onTaskComplete(String html) {
+        if(!html.equals("")){
+            Document doc = Jsoup.parse(html);
+            doc.setBaseUri("https://cow.ceng.metu.edu.tr");
+
+            ArrayList<Pairs> lnames = new ArrayList<Pairs>();
+            Map<String,String> lcodes = new HashMap<String,String>();
+
+            Elements names = doc.select("div");
+            Element divs = null;
+            for(Element e:names){
+                if(e.attr("id").equals("mtm_menu_horizontal"))
+                    divs = e;
             }
-
-
-            return "";
-        }
-
-
-        @Override
-        protected void onPostExecute(String html) {
-            if(!html.equals("")){
-                Document doc = Jsoup.parse(html);
-                doc.setBaseUri("https://cow.ceng.metu.edu.tr");
-
-                ArrayList<Pairs> lnames = new ArrayList<Pairs>();
-                Map<String,String> lcodes = new HashMap<String,String>();
-
-                Elements names = doc.select("div");
-                Element divs = null;
-                for(Element e:names){
-                    if(e.attr("id").equals("mtm_menu_horizontal"))
-                        divs = e;
-                }
-                Elements rnamesd = doc.select("td.content").select("tr").select("td");
-
+            Elements rnamesd = doc.select("td.content").select("tr").select("td");
+            if(divs!=null){
                 int x = 0;
                 while(x<rnamesd.size()){
                     lcodes.put(rnamesd.get(x).text(), rnamesd.get(x+1).text());
@@ -136,12 +108,13 @@ public class CoursesFragment extends Fragment{
                 listView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }else{
-                Toast.makeText(getActivity().getApplicationContext(), R.string.network_problem, Toast.LENGTH_SHORT).show();
-                getActivity().finish();
+                //This is not a solution
+                Toast.makeText(getActivity().getApplicationContext(), R.string.no_course_selected, Toast.LENGTH_SHORT).show();
             }
+        }else{
+            Toast.makeText(getActivity().getApplicationContext(), R.string.network_problem, Toast.LENGTH_SHORT).show();
+            getActivity().finish();
         }
-
-
     }
 
     public class Pairs{

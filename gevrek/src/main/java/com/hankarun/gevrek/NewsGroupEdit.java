@@ -207,7 +207,6 @@ public class NewsGroupEdit extends FragmentActivity {
             bar.setVisibility(View.VISIBLE);
         }
 
-
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);

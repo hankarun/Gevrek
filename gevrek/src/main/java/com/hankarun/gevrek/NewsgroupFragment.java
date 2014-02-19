@@ -2,11 +2,8 @@ package com.hankarun.gevrek;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,36 +18,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewsgroupFragment extends Fragment{
+public class NewsgroupFragment extends Fragment implements JavaAsyncCompleteListener{
     private ExpandableListView listview;
     private ExpandableListAdapter adapter;
-    private Loadgroups task;
 
     @Override
     public void onPause(){
         super.onPause();
-        if(task != null)
+        //Something must be done.
+        /*if(task != null)
             task.cancel(true);
         if(task != null)
-            task.cancel(true);
+            task.cancel(true);*/
     }
 
     private ProgressBar bar;
@@ -58,8 +47,7 @@ public class NewsgroupFragment extends Fragment{
     public void reload(){
         listview.setVisibility(View.GONE);
         bar.setVisibility(View.VISIBLE);
-        task = new Loadgroups();
-        task.execute();
+        startTask();
     }
 
 
@@ -83,11 +71,11 @@ public class NewsgroupFragment extends Fragment{
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            if(task.getStatus() == AsyncTask.Status.FINISHED){
+            //if(task.getStatus() == AsyncTask.Status.FINISHED){
                 Intent intent = new Intent(getActivity(), NewsGroupEdit.class);
                 getActivity().startActivityForResult(intent, 1);
                 return true;
-            }
+            //}
         }
         return super.onOptionsItemSelected(item);
     }
@@ -95,8 +83,7 @@ public class NewsgroupFragment extends Fragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        task = new Loadgroups();
-        task.execute();
+        startTask();
     }
 
     @Override
@@ -108,6 +95,57 @@ public class NewsgroupFragment extends Fragment{
         bar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         return rootView;
+    }
+
+    private List<Newsgroup> groups;
+
+    @Override
+    public void onTaskComplete(String html) {
+        if(!html.equals("")){
+            groups = new ArrayList<Newsgroup>();
+
+            Document doc = Jsoup.parse(html);
+            Elements groupblock = doc.select(".np_index_groupblock:not(:has(div))");
+            Elements grouphead = doc.select("div.np_index_grouphead");
+            int a = 0;
+            for (Element div : groupblock) {
+                Newsgroup temp = new Newsgroup();
+                temp.name = grouphead.get(a++).text();
+                Elements rews = div.select("a");
+                Elements smalls = div.select("small");
+                int b = 0;
+                for (Element link : rews){
+                    String color = "";
+                    if(smalls.get(b).select("font").size()>0)
+                        color = smalls.get(b).select("font").attr("color");
+                    temp.addUrl(link.text(), link.attr("href"),smalls.get(b++).text(),color);
+                }
+                groups.add(temp);
+
+            }
+            adapter = new ExpandableListAdapter(getActivity().getApplicationContext(),groups);
+            listview.setAdapter(adapter);
+            for(int x = 0; x < groups.size(); x++)
+                listview.expandGroup(x);
+            listview.setGroupIndicator(null);
+            listview.setVisibility(View.VISIBLE);
+            bar.setVisibility(View.GONE);
+            listview.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
+            {
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v, int group_position, int child_position, long id)
+                {
+                    Intent intent = new Intent(getActivity(), GroupMessages.class);
+                    intent.putExtra("name",groups.get(group_position).getUrl(child_position).name);
+                    intent.putExtra("link",groups.get(group_position).getUrl(child_position).url);
+                    startActivity(intent);
+                    return false;
+                }
+            });
+        }else{
+            Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
     }
 
     public class Newsgroup {
@@ -145,94 +183,10 @@ public class NewsgroupFragment extends Fragment{
             color = _color;
         }
     }
-
-    private class Loadgroups extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... args) {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-            String uname = settings.getString("user_name", "");
-            String upassword = settings.getString("user_password", "");
-
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("https://cow.ceng.metu.edu.tr/News/cowNews_left.php");
-
-            try {
-
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("cow_username", uname));
-                nameValuePairs
-                        .add(new BasicNameValuePair("cow_password", upassword));
-                nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
-
-                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                HttpResponse response = client.execute(post);
-
-                String html = EntityUtils.toString(response.getEntity());
-                return html;
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            return "";
-        }
-        List<Newsgroup> groups;
-        @Override
-        protected void onPostExecute(String html) {
-            if(!html.equals("")){
-                groups = new ArrayList<Newsgroup>();
-
-                Document doc = Jsoup.parse(html);
-                Elements groupblock = doc.select(".np_index_groupblock:not(:has(div))");
-                Elements grouphead = doc.select("div.np_index_grouphead");
-                int a = 0;
-                for (Element div : groupblock) {
-                    Newsgroup temp = new Newsgroup();
-                    temp.name = grouphead.get(a++).text();
-                    Elements rews = div.select("a");
-                    Elements smalls = div.select("small");
-                    int b = 0;
-                    for (Element link : rews){
-                        String color = "";
-                        if(smalls.get(b).select("font").size()>0)
-                            color = smalls.get(b).select("font").attr("color");
-                        temp.addUrl(link.text(), link.attr("href"),smalls.get(b++).text(),color);
-                    }
-                    groups.add(temp);
-
-                }
-                adapter = new ExpandableListAdapter(getActivity().getApplicationContext(),groups);
-                listview.setAdapter(adapter);
-                for(int x = 0; x < groups.size(); x++)
-                    listview.expandGroup(x);
-                listview.setGroupIndicator(null);
-                listview.setVisibility(View.VISIBLE);
-                bar.setVisibility(View.GONE);
-                listview.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
-                {
-                    @Override
-                    public boolean onChildClick(ExpandableListView parent, View v, int group_position, int child_position, long id)
-                    {
-                        //Toast.makeText(getActivity().getApplicationContext(), groups.get(group_position).getUrl(child_position).url, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), GroupMessages.class);
-                        intent.putExtra("name",groups.get(group_position).getUrl(child_position).name);
-                        intent.putExtra("link",groups.get(group_position).getUrl(child_position).url);
-                        startActivity(intent);
-                        return false;
-                    }
-                });
-            }else{
-                Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-
-        }
-
-
+    //Async Task for url fetch
+    private void startTask(){
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+        new PageFetchAsync(this,HttpPages.left_page,getActivity()).execute(nameValuePairs);
     }
 
     public class ExpandableListAdapter extends BaseExpandableListAdapter {

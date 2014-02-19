@@ -63,7 +63,7 @@ public class PostActivity extends FragmentActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements JavaAsyncCompleteListener{
         final String link;
         String quote;
         String newsgroups;
@@ -157,6 +157,40 @@ public class PostActivity extends FragmentActivity {
             });
 
             return rootView;
+        }
+
+        //Async Task for url fetch
+        private void startTask(){
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            //Adding other post parameters
+            nameValuePairs.add(new BasicNameValuePair("body",body.getText().toString()));
+            nameValuePairs.add(new BasicNameValuePair("references",references));
+            nameValuePairs.add(new BasicNameValuePair("group",newsgroup));
+            nameValuePairs.add(new BasicNameValuePair("newsgroups",newsgroups));
+            nameValuePairs.add(new BasicNameValuePair("subject",subject.getText().toString()));
+            nameValuePairs.add(new BasicNameValuePair("cc",from.getText().toString()));
+
+
+            nameValuePairs.add(new BasicNameValuePair("type","post"));
+            new PageFetchAsync(this,HttpPages.post_page,getActivity()).execute(nameValuePairs);
+        }
+
+
+        @Override
+        public void onTaskComplete(String result) {
+            if(!result.equals("")){
+                //Check for success,
+                //Return for refresh
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("return","reload");
+                getActivity().setResult(RESULT_OK, returnIntent);
+                getActivity().finish();
+            }else{
+                Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+                Intent returnIntent = new Intent();
+                getActivity().setResult(RESULT_CANCELED, returnIntent);
+                getActivity().finish();
+            }
         }
 
         private class PostReply extends AsyncTask<String, String, String> {

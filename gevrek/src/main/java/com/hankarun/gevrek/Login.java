@@ -20,20 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,9 +48,6 @@ public class Login extends FragmentActivity {
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
     }
-
-
-
 
     public static class LoginFragment extends Fragment implements JavaAsyncCompleteListener{
 
@@ -224,7 +214,7 @@ public class Login extends FragmentActivity {
             nameValuePairs
                     .add(new BasicNameValuePair("cow_password", password.getText().toString()));
             nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
-            new PageFetchAsync(this,1).execute(nameValuePairs);
+            new PageFetchAsync(this,HttpPages.login_page,getActivity()).execute(nameValuePairs);
         }
 
         @Override

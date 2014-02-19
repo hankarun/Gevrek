@@ -91,7 +91,7 @@ public class Homeworks extends FragmentActivity {
     }
 
 
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements JavaAsyncCompleteListener{
         ListView listView;
 
         final String link;
@@ -170,88 +170,62 @@ public class Homeworks extends FragmentActivity {
             });
 
             bar = (ProgressBar) rootView.findViewById(R.id.homeworkBar);
-            new LoadHomeworks().execute(link);
+            startTask();
+            //new LoadHomeworks().execute(link);
             return rootView;
         }
 
-        private class LoadHomeworks extends AsyncTask<String,String,String> {
+        //Async Task for url fetch
+        private void startTask(){
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("task_homeworks","list"));
+            nameValuePairs.add(new BasicNameValuePair("selector_homeworks_course",link));
+            new PageFetchAsync(this,HttpPages.homeworks_page,getActivity()).execute(nameValuePairs);
+        }
 
-            @Override
-            protected String doInBackground(String... strings) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        @Override
+        public void onTaskComplete(String html) {
+            if(!html.equals("")){
+                Document doc = Jsoup.parse(html);
+                ArrayList<HomeWorks> hmws = new ArrayList<HomeWorks>();
 
-                String uname = settings.getString("user_name", "");
-                String upassword = settings.getString("user_password", "");
+                Elements table = doc.select("table.cow");
+                Elements others = table.select("tr");
 
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://cow.ceng.metu.edu.tr/Student/homeworks.php");
-
-                try {
-
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                    nameValuePairs.add(new BasicNameValuePair("cow_username", uname));
-                    nameValuePairs
-                            .add(new BasicNameValuePair("cow_password", upassword));
-                    nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
-                    nameValuePairs.add(new BasicNameValuePair("task_homeworks","list"));
-                    nameValuePairs.add(new BasicNameValuePair("selector_homeworks_course",link));
-
-                    post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                    HttpResponse response = client.execute(post);
-
-                    String html = EntityUtils.toString(response.getEntity());
-                    return html;
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String html) {
-                if(!html.equals("")){
-                    Document doc = Jsoup.parse(html);
-                    ArrayList<HomeWorks> hmws = new ArrayList<HomeWorks>();
-
-                    Elements table = doc.select("table.cow");
-                    Elements others = table.select("tr");
-
-                    if(!others.toString().contains("The list is empty....")){
-                        for(int x=3; x < others.size(); x++){
-                            HomeWorks tmp = new HomeWorks();
-                            tmp.id = others.get(x).select("td").get(0).text();
-                            tmp.name = others.get(x).select("td").get(1).text();
-                            tmp.deadline = others.get(x).select("td").get(2).text();
-                            tmp.greaded = others.get(x).select("td").get(3).text();
-                            tmp.link = others.get(x).select("td").get(4).select("a").attr("href");
-                            if(others.get(x).select("td").get(5).text().equals(""))
-                                tmp.greade = "-";
-                            else
-                                tmp.greade = others.get(x).select("td").get(5).text();
-                            tmp.avarage = others.get(x).select("td").get(6).text();
-                            tmp.course = course;
-                            hmws.add(tmp);
-                        }
-                    }else{
-                        //Show no homework screen
-                        Toast.makeText(getActivity().getApplicationContext(), R.string.no_hmw, Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
-
+                if(!others.toString().contains("The list is empty....")){
+                    for(int x=3; x < others.size(); x++){
+                        HomeWorks tmp = new HomeWorks();
+                        tmp.id = others.get(x).select("td").get(0).text();
+                        tmp.name = others.get(x).select("td").get(1).text();
+                        tmp.deadline = others.get(x).select("td").get(2).text();
+                        tmp.greaded = others.get(x).select("td").get(3).text();
+                        tmp.link = others.get(x).select("td").get(4).select("a").attr("href");
+                        if(others.get(x).select("td").get(5).text().equals(""))
+                            tmp.greade = "-";
+                        else
+                            tmp.greade = others.get(x).select("td").get(5).text();
+                        tmp.avarage = others.get(x).select("td").get(6).text();
+                        tmp.course = course;
+                        hmws.add(tmp);
                     }
-
-                    MyOtherAdapter adapter = new MyOtherAdapter(getActivity().getApplicationContext(),hmws);
-                    listView.setAdapter(adapter);
-                    bar.setVisibility(View.GONE);
-                    listView.setVisibility(View.VISIBLE);
                 }else{
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.network_problem, Toast.LENGTH_SHORT).show();
+                    //Show no homework screen
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.no_hmw, Toast.LENGTH_SHORT).show();
                     getActivity().finish();
+
                 }
+
+                MyOtherAdapter adapter = new MyOtherAdapter(getActivity().getApplicationContext(),hmws);
+                listView.setAdapter(adapter);
+                bar.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+            }else{
+                Toast.makeText(getActivity().getApplicationContext(), R.string.network_problem, Toast.LENGTH_SHORT).show();
+                getActivity().finish();
             }
         }
+
+
         public class HomeWorks{
             String course;
             String id;

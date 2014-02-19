@@ -45,35 +45,16 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/background_updates"
-            android:id="@+id/backgroundCheckBox"
-            android:visibility="gone" />
-
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/use_only_wifi"
-            android:id="@+id/useWifiCheckBox"
-            android:visibility="gone" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:visibility="gone" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/scheduled_message"
-            android:id="@+id/textView2"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone" />
+            android:text="@string/avatar_options"
+            android:id="@+id/textView2" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"/>
 
     </LinearLayout>
 

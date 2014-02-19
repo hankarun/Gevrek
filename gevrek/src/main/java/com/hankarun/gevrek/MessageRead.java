@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -180,22 +181,18 @@ public class MessageRead extends FragmentActivity {
         }
     }
 
-
-
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements JavaAsyncCompleteListener{
         final String link;
         String reply;
+        private Bitmap bmps;
 
         @Override
         public void onPause(){
             super.onPause();
-            if(task != null)
-                task.cancel(true);
-            if(task != null)
-                task.cancel(true);
+
         }
 
 
@@ -233,14 +230,14 @@ public class MessageRead extends FragmentActivity {
             // as you specify a parent activity in AndroidManifest.xml.
             int id = item.getItemId();
             if (id == R.id.action_settings) {
-                if(task.getStatus() == AsyncTask.Status.FINISHED){
+                //if(task.getStatus() == AsyncTask.Status.FINISHED){
                     Intent intent = new Intent(getActivity(), PostActivity.class);
 
                     intent.putExtra("reply", reply);
                     getActivity().startActivityForResult(intent,1);
 
                     return true;
-                }
+                //}
             }
             return super.onOptionsItemSelected(item);
         }
@@ -252,7 +249,6 @@ public class MessageRead extends FragmentActivity {
         LinearLayout lm1;
         LinearLayout lm2;
         ProgressBar progressBar;
-        LoadMessages task;
 
         String title;
 
@@ -272,100 +268,103 @@ public class MessageRead extends FragmentActivity {
             progressBar = (ProgressBar) rootView.findViewById(R.id.messageReadProgress);
 
 
-
-            task = new LoadMessages();
-            task.execute();
+            startTask();
+            //task = new LoadMessages();
+            //task.execute();
             return rootView;
         }
 
-        private class LoadMessages extends AsyncTask<String, String, String> {
+        //Async Task for url fetch
+        private void startTask(){
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            new PageFetchAsync(this,HttpPages.group_page+link,getActivity()).execute(nameValuePairs);
+        }
 
+        private class GetAvatar extends AsyncTask<String, Void, Void>{
             Bitmap bmp;
-
             @Override
-            protected String doInBackground(String... args) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-                String uname = settings.getString("user_name", "");
-                String upassword = settings.getString("user_password", "");
-
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://cow.ceng.metu.edu.tr/News/"+link);
-
+            protected Void doInBackground(String... strings) {
                 try {
-
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                    nameValuePairs.add(new BasicNameValuePair("cow_username", uname));
-                    nameValuePairs
-                            .add(new BasicNameValuePair("cow_password", upassword));
-                    nameValuePairs.add(new BasicNameValuePair("cow_login", "login"));
-
-                    post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                    HttpResponse response = client.execute(post);
-
-
-                    String html = EntityUtils.toString(response.getEntity(), "ISO-8859-9");
-
-                    Document doc = Jsoup.parse(html);
-                    Elements heads = doc.select("tbody").select("td");
-
-                    URL url = new URL(heads.get(0).select("a").attr("href"));
-
+                    URL url = new URL(strings[0]);
                     bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                }catch (Exception e){
 
-
-                    return html;
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-
-                return "";
+                return null;
             }
 
-
             @Override
-            protected void onPostExecute(String html) {
-                if(!html.equals("")){
-                    Document doc = Jsoup.parse(html);
+            protected  void onPostExecute(Void voids){
+                avatar.setImageBitmap(bmp);
+            }
+        }
 
-                    avatar.setImageBitmap(bmp);
+        private void avatarCheck(Document doc){
+            //Check for options
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-                    reply = doc.select("a.np_button").attr("href");
-
-                    String tmp = doc.select("div.np_article_header").text();
-                    int sbb = tmp.indexOf("Subject:");
-                    int fbb = tmp.indexOf("From:");
-                    int dbb = tmp.indexOf("Date:");
-                    String attach = "";
-                    if(tmp.indexOf("Attachments:")>0){
-                        attach = getString(R.string.attachments) + doc.select("div.np_article_header").select("a").get(1).toString();
+            switch (settings.getInt("avatar_method",0)){
+                case 2:
+                    if(InternetConnection.isConnected(getActivity().getApplicationContext())){
+                        Elements heads = doc.select("tbody").select("td");
+                        new GetAvatar().execute(heads.get(0).select("a").attr("href"));
                     }
+                    break;
+                case 1:
+                    if(InternetConnection.isConnectedFast(getActivity().getApplicationContext())){
+                        Elements heads = doc.select("tbody").select("td");
+                        new GetAvatar().execute(heads.get(0).select("a").attr("href"));
+                    }
+                    break;
+                case 0:
+                    if(InternetConnection.isConnectedWifi(getActivity().getApplicationContext())){
+                        Elements heads = doc.select("tbody").select("td");
+                        new GetAvatar().execute(heads.get(0).select("a").attr("href"));
+                    }
+                    break;
+            }
 
-                    title = tmp.substring(sbb +9, fbb -1);
+        }
 
-                    String fpps = tmp.substring(fbb,tmp.length());
+        @Override
+        public void onTaskComplete(String html) {
+            if(!html.equals("")){
+                Document doc = Jsoup.parse(html);
 
-                    from.setText(fpps.substring(6, fpps.indexOf("(") - 1)); //author
-                    date.setText(tmp.substring(dbb + 6, dbb+20)); //date
+                avatarCheck(doc);
 
-                    Elements bod  = doc.select("div.np_article_body");
-                    String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /></head><body>";
-                    String end = "</body></html>";
-                    body.loadData(start + attach + bod.toString() + end, "text/html; charset=UTF-8", null);
-                    body.setBackgroundColor(0x00000000);
-                    lm1.setVisibility(View.VISIBLE);
-                    lm2.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }else{
-                    Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
+                reply = doc.select("a.np_button").attr("href");
+
+                String tmp = doc.select("div.np_article_header").text();
+                int sbb = tmp.indexOf("Subject:");
+                int fbb = tmp.indexOf("From:");
+                int dbb = tmp.indexOf("Date:");
+                String attach = "";
+                if(tmp.indexOf("Attachments:")>0){
+                    attach = getString(R.string.attachments) + doc.select("div.np_article_header").select("a").get(1).toString();
                 }
+
+                title = tmp.substring(sbb +9, fbb -1);
+
+                String fpps = tmp.substring(fbb,tmp.length());
+
+                from.setText(fpps.substring(6, fpps.indexOf("(") - 1)); //author
+                date.setText(tmp.substring(dbb + 6, dbb+20)); //date
+
+                Elements bod  = doc.select("div.np_article_body");
+                String start = "<html><head><meta http-equiv='Content-Type' content='text/html' charset='UTF-8' /></head><body>";
+                String end = "</body></html>";
+                body.loadData(start + attach + bod.toString() + end, "text/html; charset=UTF-8", null);
+                body.setBackgroundColor(0x00000000);
+                lm1.setVisibility(View.VISIBLE);
+                lm2.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }else{
+                Toast.makeText(getActivity().getApplicationContext(),R.string.network_problem,Toast.LENGTH_SHORT).show();
+                getActivity().finish();
             }
 
 
         }
     }
-
 }
