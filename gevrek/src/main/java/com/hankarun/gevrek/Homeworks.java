@@ -210,9 +210,9 @@ public class Homeworks extends FragmentActivity {
                     }
                 }else{
                     //Show no homework screen
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.no_hmw, Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
-
+                    bar.setVisibility(View.GONE);
+                    TextView te = (TextView) getActivity().findViewById(R.id.nohmw);
+                    te.setVisibility(View.VISIBLE);
                 }
 
                 MyOtherAdapter adapter = new MyOtherAdapter(getActivity().getApplicationContext(),hmws);

@@ -58,6 +58,7 @@
     <string name="service_name">updateService</string>
     <string name="no_course_selected">No Course Selected</string>
     <string name="avatar_options">Avatar Download Options</string>
+    <string name="no_homework">No course selected.</string>
 
     <string-array name="data_status">
         <item>Download with Wifi</item>

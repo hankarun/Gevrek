@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -123,7 +124,7 @@ public class NewsgroupFragment extends Fragment implements JavaAsyncCompleteList
                 groups.add(temp);
 
             }
-            adapter = new ExpandableListAdapter(getActivity().getApplicationContext(),groups);
+            adapter = new ExpandableListAdapter(getActivity(),groups);
             listview.setAdapter(adapter);
             for(int x = 0; x < groups.size(); x++)
                 listview.expandGroup(x);

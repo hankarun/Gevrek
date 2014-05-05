@@ -22,4 +22,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/homeworkBar"
         android:layout_centerInParent="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/no_homework"
+        android:id="@+id/nohmw"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/hmwlist"
+        android:layout_alignStart="@+id/hmwlist"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </RelativeLayout>

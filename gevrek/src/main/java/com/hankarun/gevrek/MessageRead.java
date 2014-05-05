@@ -301,7 +301,7 @@ public class MessageRead extends FragmentActivity {
 
         private void avatarCheck(Document doc){
             //Check for options
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 
             switch (settings.getInt("avatar_method",0)){
                 case 2:

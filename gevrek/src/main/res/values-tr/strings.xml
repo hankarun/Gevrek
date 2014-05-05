@@ -58,6 +58,7 @@
     <string name="service_name">updateService</string>
     <string name="no_course_selected">Seçili ders yok.</string>
     <string name="avatar_options">Avatar Yükleme Tercihi</string>
+    <string name="no_homework">Seçili ders yok</string>
 
     <string-array name="data_status">
         <item>Download with Wifi</item>
